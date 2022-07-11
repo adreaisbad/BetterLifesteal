@@ -1,0 +1,4 @@
+name: BetterLifesteal
+version: '${project.version}'
+main: me.adrea.lifesteal.BetterLifesteal
+api-version: 1.19
