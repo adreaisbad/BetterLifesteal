@@ -1,9 +1,11 @@
 package me.adrea.lifesteal.settings.modules.eliminations;
 
-import me.adrea.lifesteal.config.PlayersConfig;
+import me.adrea.lifesteal.config.PluginConfig;
 import me.adrea.lifesteal.settings.Setting;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -17,7 +19,7 @@ public class Elimination extends Setting {
 
     public Elimination() {
         super("Elimination", "When a player got killed, they lose a heart, " +
-                "and the killer gets an extra heart.", true, false);
+                "and the killer gets an extra heart.", true, false, Material.APPLE);
 
         heartsUtils = new HeartsUtils();
     }
@@ -46,41 +48,73 @@ public class Elimination extends Setting {
         Player p = (Player) e.getEntity();
         Player pk = e.getEntity().getKiller();
 
-        setHealth(p.getUniqueId(),
-                getCurrentHearts(p.getUniqueId()) - 1 ,
-                getLostHearts(p.getUniqueId()) + 1,
-                getGainedHearts(p.getUniqueId()));
+        EntityDamageEvent ede = p.getLastDamageCause();
 
-        if (pk != null) {
-            setHealth(pk.getUniqueId(),
-                    getCurrentHearts(pk.getUniqueId()) + 1 ,
-                    getLostHearts(pk.getUniqueId()),
-                    getGainedHearts(pk.getUniqueId()) + 1);
+        EntityDamageEvent.DamageCause dc = ede.getCause();
 
-            heartsUtils.setMaxHealth(pk, getCurrentHearts(pk.getUniqueId()) + 1);
+        if (p instanceof Player && pk instanceof Player
+                && dc == EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+
+            // Casual 1v1, I'm the best ww so I got full hearts.
+
+            setHealth(p.getUniqueId(),
+                    getCurrentHearts(p.getUniqueId()) - 1 ,
+                    getLostHearts(p.getUniqueId()) + 1,
+                    getGainedHearts(p.getUniqueId()));
+
+            if (pk != null) {
+                setHealth(pk.getUniqueId(),
+                        getCurrentHearts(pk.getUniqueId()) + 1 ,
+                        getLostHearts(pk.getUniqueId()),
+                        getGainedHearts(pk.getUniqueId()) + 1);
+
+                heartsUtils.setMaxHealth(pk, pk.getHealth() + 1);
+            }
+
+            heartsUtils.setMaxHealth(p, p.getHealth() - 1);
+
+        } else {
+
+            if (!plugin.getConfig().getBoolean("Settings.AllowEnvironmentDeath")) return;
+
+            setHealth(p.getUniqueId(),
+                    getCurrentHearts(p.getUniqueId()) - 1 ,
+                    getLostHearts(p.getUniqueId()) + 1,
+                    getGainedHearts(p.getUniqueId()));
+
+            if (pk != null) {
+                setHealth(pk.getUniqueId(),
+                        getCurrentHearts(pk.getUniqueId()) + 1 ,
+                        getLostHearts(pk.getUniqueId()),
+                        getGainedHearts(pk.getUniqueId()) + 1);
+
+                heartsUtils.setMaxHealth(pk, pk.getHealth() + 1);
+            }
+
+            heartsUtils.setMaxHealth(p, p.getHealth()  - 1);
         }
 
-        heartsUtils.setMaxHealth(p, getCurrentHearts(p.getUniqueId()) - 1);
+
 
     }
 
     private void setHealth(UUID uuid, int current, int lost, int gained) {
-        PlayersConfig.getFile().set(uuid + ".currentHearts", current);
-        PlayersConfig.getFile().set(uuid + ".lostHearts", lost);
-        PlayersConfig.getFile().set(uuid + ".gainedHearts", gained);
+        PluginConfig.getFile().set(uuid + ".currentHearts", current);
+        PluginConfig.getFile().set(uuid + ".lostHearts", lost);
+        PluginConfig.getFile().set(uuid + ".gainedHearts", gained);
 
-        PlayersConfig.saveConfiguration();
+        PluginConfig.saveConfiguration();
     }
 
     private int getCurrentHearts(UUID uuid) {
-        return PlayersConfig.getFile().getInt(uuid + ".currentHearts");
+        return PluginConfig.getFile().getInt(uuid + ".currentHearts");
     }
 
     private int getLostHearts(UUID uuid) {
-        return PlayersConfig.getFile().getInt(uuid + ".lostHearts");
+        return PluginConfig.getFile().getInt(uuid + ".lostHearts");
     }
 
     private int getGainedHearts(UUID uuid) {
-        return PlayersConfig.getFile().getInt(uuid + ".gainedHearts");
+        return PluginConfig.getFile().getInt(uuid + ".gainedHearts");
     }
 }

@@ -1,9 +1,10 @@
 package me.adrea.lifesteal;
 
-import me.adrea.lifesteal.config.PlayersConfig;
+import me.adrea.lifesteal.config.PluginConfig;
 import me.adrea.lifesteal.settings.ModuleManager;
 import me.adrea.lifesteal.settings.Setting;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class BetterLifesteal extends JavaPlugin {
@@ -14,9 +15,14 @@ public final class BetterLifesteal extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //
+        // Config
 
-        PlayersConfig.setup();
+        PluginConfig.setup();
+
+        getConfig().getDefaults().options().copyDefaults(true);
+        saveDefaultConfig();
+
+        // Modules
 
         moduleManager = new ModuleManager();
 
@@ -26,6 +32,7 @@ public final class BetterLifesteal extends JavaPlugin {
             getServer().getPluginManager().registerEvents(module, this);
         }
 
+        // Finalize
         writeConsoleMessage("&aDone.");
 
     }
@@ -42,5 +49,13 @@ public final class BetterLifesteal extends JavaPlugin {
 
     public void writeConsoleMessage(String message) {
         getServer().getConsoleSender().sendMessage(textWithColor(message));
+    }
+
+    public void writeMessage(String message, Player p) {
+        p.sendMessage(textWithColor(message));
+    }
+
+    public ModuleManager getModuleManager() {
+        return moduleManager;
     }
 }
