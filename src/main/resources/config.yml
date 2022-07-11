@@ -1,0 +1,105 @@
+################################################################################################################################
+#                                                    Made by IPlayLegit                                                        #
+#                                                                                                                              #
+#                          Message me on Discord if you need assistance with this plugin (adrea#6661)                          #
+#                           If you want to report a bug, make sure it isn't caused by another plugin.                          #
+#                               Read all comments carefully to understand what each module does.                               #
+#                                     You can also edit this config via GUI (/ls gui)                                          #
+#                                                                                                                              #
+################################################################################################################################
+
+
+# Specific which language you want to use for this plugin.
+
+Language: EN
+
+# Display/report all debug logs. (unfinished)
+
+Debug: false
+
+# Automatic updates for this plugin.
+
+Updates:
+
+  # If you want the plugin to check for updates every server startup.
+
+  CheckOnStartup: true
+
+  # If you want the plugin to download the new update automatically when it is requested.
+
+  AutoUpdate: true
+
+# Database configuration
+
+Database:
+
+  # Type: FILES, MYSQL, SQLITE, MARIADB. 
+  # Select FILES to save the data to files in a folder, and others to use databases.
+
+  Type: FILES
+
+  # Hostname/IP address.
+
+  Hostname: 127.0.0.1
+
+  # Database username.
+
+  Username: adrea
+  
+  # Database password.
+
+  Password: 'yourDatabasePassword'
+
+  # Database port.
+
+  Port: 3306
+
+Settings:
+
+  # If you want players to lose hearts despite not being killed.
+  # This means that when you die normally, you will lose hearts also.
+
+  AllowEnvironmentDeath: false
+  
+  # A player's maximum number of hearts.
+
+  MaxHearts: 30.0
+
+  # A player's minimum number of hearts. (must not be less than 0)
+  # If configured, the player will be unable to join the server because they have been eliminated.
+
+  MinHearts: 1.0
+
+  # If you enable this, you will be unable to increase your hearts over the maximum limit.
+  # This can help to prevent admin abuse.
+
+  ForceMaxHearts: true
+
+  Elimination:
+    
+    Enabled: true
+    
+    # Types: RESTORE, BANNED, SPECTATOR, COMMANDS
+    # If you select restore, the player will be respawned and restored to full health when they are removed.
+    # If you select banned, the player will be unable to connect to the server because they have been removed.
+    # If you select spectator, the player will be put in spectator mode if they are eliminated.
+    # If you select commands, you can specify which custom commands should be executed when they are removed.
+
+    Type: SPECTATOR
+
+    # Also should the player be kicked when they are eliminated?
+    Kick: true
+
+    Commands:
+      - "broadcast %player_name% has been eliminated! gg anyways"
+
+  # The plugin will do its best to hide the world seed, but it may not always work.
+
+  EncryptWorldSeed: true
+
+  # Disable all OP/permissions required commands, leaving only vanilla survival.
+  # This could help to prevent admin abuse.
+
+  DisableOPCommands: false
+
+# I mean, can you suggest something I could do?
